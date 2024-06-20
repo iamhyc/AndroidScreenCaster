@@ -18,8 +18,7 @@ import android.view.Surface;
 
 import com.github.magicsih.androidscreencaster.consts.ActivityServiceMessage;
 import com.github.magicsih.androidscreencaster.consts.ExtraIntent;
-import com.github.magicsih.androidscreencaster.datagram.DatagramSocketClient;
-import com.github.magicsih.androidscreencaster.tcpstream.TcpSocketClient;
+import com.github.magicsih.androidscreencaster.service.RustStreamReplay;
 import com.github.magicsih.androidscreencaster.writer.IvfWriter;
 
 import java.io.IOException;
@@ -39,9 +38,6 @@ public final class ScreenCastService extends Service {
     private Handler handler;
     private Messenger crossProcessMessenger;
 
-    private TcpSocketClient tcpSocketClient;
-    private DatagramSocketClient datagramSocketClient;
-
     private MediaProjection mediaProjection;
     private Surface inputSurface;
     private VirtualDisplay virtualDisplay;
@@ -49,7 +45,6 @@ public final class ScreenCastService extends Service {
     private MediaCodec encoder;
     private IvfWriter ivf;
 
-    private InetAddress remoteHost;
     private int remotePort;
 
     @Override
@@ -66,7 +61,6 @@ public final class ScreenCastService extends Service {
                         break;
                     case ActivityServiceMessage.STOP:
                         stopScreenCapture();
-                        closeSocket();
                         stopSelf();
                         break;
                 }
@@ -90,7 +84,6 @@ public final class ScreenCastService extends Service {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
         stopScreenCapture();
-        closeSocket();
     }
 
     @Override
@@ -99,26 +92,10 @@ public final class ScreenCastService extends Service {
             return START_NOT_STICKY;
         }
 
-        final String protocol = intent.getStringExtra(ExtraIntent.PROTOCOL.toString());
-
-        final String remoteHost = intent.getStringExtra(ExtraIntent.SERVER_HOST.toString());
         remotePort = intent.getIntExtra(ExtraIntent.PORT.toString(), 49152);
-        if(remoteHost == null) {
-            return START_NOT_STICKY;
-        }
-
-        try {
-            this.remoteHost = InetAddress.getByName(remoteHost);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-            return START_NOT_STICKY;
-        }
-
 
         final int resultCode = intent.getIntExtra(ExtraIntent.RESULT_CODE.toString(), -1);
         final Intent resultData = intent.getParcelableExtra(ExtraIntent.RESULT_DATA.toString());
-
-        Log.i(TAG, "resultCode: " + resultCode + " serverAddr:" + remoteHost);
 
         if (resultCode == 0 || resultData == null) { return  START_NOT_STICKY; }
 
@@ -128,22 +105,15 @@ public final class ScreenCastService extends Service {
         final int screenDpi = intent.getIntExtra(ExtraIntent.SCREEN_DPI.toString(), 96);
         final int bitrate = intent.getIntExtra(ExtraIntent.VIDEO_BITRATE.toString(), 1024000);
 
+        final String ipaddr1 = intent.getStringExtra(ExtraIntent.IPADDR1.toString());
+        final String ipaddr2 = intent.getStringExtra(ExtraIntent.IPADDR2.toString());
+        final String manifestFile = intent.getStringExtra(ExtraIntent.MANIFEST_FILE.toString());
+        final float duration = intent.getFloatExtra(ExtraIntent.DURATION.toString(), 10);
+        final int ipcPort = intent.getIntExtra(ExtraIntent.IPC_PORT.toString(), 11112);
+
         Log.i(TAG, "Start casting with format:" + format + ", screen:" + screenWidth +"x"+screenHeight +" @ " + screenDpi + " bitrate:" + bitrate);
 
-
-        if("udp".equals(protocol)) {
-            if(!createUdpSocket()) {
-                Log.e(TAG, "Failed to connect udp://" + remoteHost + ":" + remotePort);
-                return START_NOT_STICKY;
-            }
-            Log.i(TAG, "UDP Socket created.");
-        } else {
-            if (!createSocket()) {
-                Log.e(TAG, "Failed to connect tcp://" + remoteHost + ":" + remotePort);
-                return START_NOT_STICKY;
-            }
-            Log.i(TAG, "TCP Socket created.");
-        }
+        RustStreamReplay.startReplay(getAssets(), manifestFile, ipaddr1, ipaddr2, duration, ipcPort);
         
         startScreenCapture(resultCode, resultData, format, screenWidth, screenHeight, screenDpi, bitrate);
 
@@ -274,40 +244,33 @@ public final class ScreenCastService extends Service {
     }
 
     private void sendData(byte[] header, byte[] data) {
-//        if(socketOutputStream != null) {
-//            try {
-//                if(header != null) {
-//                    socketOutputStream.write(header);
-//                }
-//                socketOutputStream.write(data);
-//            } catch (IOException e) {
-//                Log.e(TAG, "Failed to write data to tcp socket, stop casting");
-//                e.printStackTrace();
-//                stopScreenCapture();
-//            }
-        if(tcpSocketClient != null) {
-            if(header != null) {
-                tcpSocketClient.send(header);
-            }
-            tcpSocketClient.send(data);
-        } else if(datagramSocketClient != null) {
-            if(header != null) {
-                byte[] headerAndBody = new byte[header.length + data.length];
-                System.arraycopy(header, 0, headerAndBody, 0, header.length);
-                System.arraycopy(data, 0, headerAndBody, header.length, data.length);
-                datagramSocketClient.send(headerAndBody);
-            } else{
-                datagramSocketClient.send(data);
-            }
-        } else{
-            Log.e(TAG, "Both tcp and udp socket are not available.");
-            stopScreenCapture();
-        }
+    //    if(socketOutputStream != null) {
+    //        try {
+    //            if(header != null) {
+    //                socketOutputStream.write(header);
+    //            }
+    //            socketOutputStream.write(data);
+    //        } catch (IOException e) {
+    //            Log.e(TAG, "Failed to write data to tcp socket, stop casting");
+    //            e.printStackTrace();
+    //            stopScreenCapture();
+    //        }
+
+        // if(header != null) {
+        //     byte[] headerAndBody = new byte[header.length + data.length];
+        //     System.arraycopy(header, 0, headerAndBody, 0, header.length);
+        //     System.arraycopy(data, 0, headerAndBody, header.length, data.length);
+        //     _socket_.send(headerAndBody);
+        // } else{
+        //     _socket_.send(data);
+        // }
+
+        // Log.e(TAG, "Both tcp and udp socket are not available.");
+        // stopScreenCapture();
     }
 
     private void stopScreenCapture() {
         releaseEncoders();
-        closeSocket();
         if (virtualDisplay == null) {
             return;
         }
@@ -338,67 +301,4 @@ public final class ScreenCastService extends Service {
         videoBufferInfo = null;
     }
 
-    private boolean createUdpSocket() {
-        datagramSocketClient = new DatagramSocketClient(remoteHost, remotePort);
-        datagramSocketClient.start();
-        return true;
-    }
-
-    private boolean createSocket() {
-        tcpSocketClient = new TcpSocketClient(remoteHost, remotePort);
-        tcpSocketClient.start();
-//        Thread t = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    Log.i(TAG, "Socket creating...");
-//                    socket = new Socket(remoteHost, remotePort);
-//                    socketOutputStream = socket.getOutputStream();
-//                } catch (IOException e) {
-//                    Log.e(TAG, "Socket creation failed - " + e.toString());
-//                    e.printStackTrace();
-//                    socket = null;
-//                    socketOutputStream = null;
-//                }
-//            }
-//        });
-//        t.start();
-//        try {
-//            t.join();
-//            if (socket != null && socketOutputStream != null) {
-//                return true;
-//            }
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        return false;
-        return true;
-    }
-
-    private void closeSocket() {
-        if(datagramSocketClient !=null) {
-            datagramSocketClient.close();
-            datagramSocketClient = null;
-        }
-
-//        if (socket != null) {
-//            try {
-//                socket.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } finally {
-//                socket = null;
-//                socketOutputStream = null;
-//            }
-//        }
-        if(tcpSocketClient != null) {
-            try {
-                tcpSocketClient.close();
-            } catch(Exception ex) {
-                ex.printStackTrace();
-            } finally {
-                tcpSocketClient = null;
-            }
-        }
-    }
 }

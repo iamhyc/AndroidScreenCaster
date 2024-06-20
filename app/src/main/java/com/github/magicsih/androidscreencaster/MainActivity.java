@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.AssetManager;
 import android.media.projection.MediaProjectionManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +21,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import com.github.magicsih.androidscreencaster.consts.ActivityServiceMessage;
 import com.github.magicsih.androidscreencaster.consts.ExtraIntent;
 import com.github.magicsih.androidscreencaster.service.ScreenCastService;
@@ -31,6 +35,7 @@ public class MainActivity extends Activity {
     private final int REMOTE_SERVER_PORT = 49152;
 
     private static final String PREFERENCE_KEY = "default";
+    private static final String PREFERENCE_MANIFEST = "manifest";
     private static final String PREFERENCE_PROTOCOL = "protocol";
     private static final String PREFERENCE_SERVER_HOST = "server_host";
     private static final String PREFERENCE_SPINNER_FORMAT = "spinner_format";
@@ -55,6 +60,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        System.loadLibrary("replay");
 
         setContentView(R.layout.activity_main);
 
@@ -97,7 +104,7 @@ public class MainActivity extends Activity {
             }
         };
 
-        final EditText editTextServerHost = (EditText) findViewById(R.id.editText_server_host);
+        final EditText editTextServerHost = (EditText) findViewById(R.id.editText_target1);
         final Button startButton = (Button) findViewById(R.id.button_start);
 
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -122,12 +129,29 @@ public class MainActivity extends Activity {
 
         editTextServerHost.setText(context.getSharedPreferences(PREFERENCE_KEY, 0).getString(PREFERENCE_SERVER_HOST, ""));
 
-        setSpinner(R.array.options_protocols,R.id.spinner_protocol, PREFERENCE_PROTOCOL);
-        setSpinner(R.array.options_format_keys, R.id.spinner_video_format, PREFERENCE_SPINNER_FORMAT);
-        setSpinner(R.array.options_resolution_keys,R.id.spinner_video_resolution, PREFERENCE_SPINNER_RESOLUTION);
-        setSpinner(R.array.options_bitrate_keys, R.id.spinner_video_bitrate, PREFERENCE_SPINNER_BITRATE);
+        // setSpinnerFromResId(R.array.options_protocols,R.id.spinner_protocol, PREFERENCE_PROTOCOL);
+        setSpinnerFromResId(R.array.options_format_keys, R.id.spinner_video_format, PREFERENCE_SPINNER_FORMAT);
+        setSpinnerFromResId(R.array.options_resolution_keys,R.id.spinner_video_resolution, PREFERENCE_SPINNER_RESOLUTION);
+        setSpinnerFromResId(R.array.options_bitrate_keys, R.id.spinner_video_bitrate, PREFERENCE_SPINNER_BITRATE);
 
-        startService();
+        // setup manifest_spinner entries from "*.json" assets files 
+        final AssetManager assets = this.getAssets();
+        List<CharSequence> manifestFiles = new ArrayList<>();
+        try {
+            final String[] assetFiles = assets.list("");
+            for (String file: assetFiles) {
+                if (file.endsWith(".json")) {
+                    manifestFiles.add(file);
+                }
+            }
+            ArrayAdapter<CharSequence> manifestAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, manifestFiles);
+            manifestAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            setSpinnerFromArrayAdapter(manifestAdapter, R.id.spinner_manifest, PREFERENCE_MANIFEST);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to list assets due to:" + e.toString());
+        }
+
+        // startService();
     }
 
     @Override
@@ -173,12 +197,17 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void setSpinner(final int textArrayOptionResId, final int textViewResId, final String preferenceId) {
+    private void setSpinnerFromResId(final int textArrayOptionResId, final int textViewResId, final String preferenceId) {
         Log.d(TAG, "Setting spinner opt_id:" + textArrayOptionResId + " view_id:" + textViewResId + " pref_id:" + preferenceId);
-
-        final Spinner spinner = (Spinner) findViewById(textViewResId);
+        
         ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(this, textArrayOptionResId, android.R.layout.simple_spinner_item);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        setSpinnerFromArrayAdapter(arrayAdapter, textViewResId, preferenceId);
+    }
+
+    private void setSpinnerFromArrayAdapter(final ArrayAdapter<CharSequence> arrayAdapter, final int textViewResId, final String preferenceId) {
+        final Spinner spinner = (Spinner) findViewById(textViewResId);
         spinner.setAdapter(arrayAdapter);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -196,20 +225,31 @@ public class MainActivity extends Activity {
     }
 
     private void startService() {
-        final EditText editTextServerHost = (EditText) findViewById(R.id.editText_server_host);
-        final String serverHost = editTextServerHost.getText().toString();
+        final EditText editText_target1 = (EditText) findViewById(R.id.editText_target1);
+        final EditText editText_target2 = (EditText) findViewById(R.id.editText_target2);
+        final String ipaddr1 = editText_target1.getText().toString();
+        final String ipaddr2 = editText_target2.getText().toString();
+
+        final Spinner manifestSpinner = (Spinner) findViewById(R.id.spinner_manifest);
+        final String manifest_file = manifestSpinner.getSelectedItem().toString();
+
+        final EditText editText_duration = (EditText) findViewById(R.id.editText_duration);
+        final float duration = Float.parseFloat(editText_duration.getText().toString());
+
+        final EditText editText_ipc_port = (EditText) findViewById(R.id.editText_ipc_port);
+        final int ipc_port = Integer.parseInt(editText_ipc_port.getText().toString());
 
         Log.i(TAG, "Starting cast service");
 
         final Intent intent = new Intent(this, ScreenCastService.class);
 
         if(stateResultCode != 0 && stateResultData != null) {
-            final Spinner protocolSpinner = (Spinner) findViewById(R.id.spinner_protocol);
+            // final Spinner protocolSpinner = (Spinner) findViewById(R.id.spinner_protocol);
             final Spinner videoFormatSpinner = (Spinner) findViewById(R.id.spinner_video_format);
             final Spinner videoResolutionSpinner = (Spinner) findViewById(R.id.spinner_video_resolution);
             final Spinner videoBitrateSpinner = (Spinner) findViewById(R.id.spinner_video_bitrate);
 
-            final String protocol = protocolSpinner.getSelectedItem().toString().toLowerCase();
+            // final String protocol = protocolSpinner.getSelectedItem().toString().toLowerCase();
             final String videoFormat = getResources().getStringArray(R.array.options_format_values)[videoFormatSpinner.getSelectedItemPosition()];
             final String[] videoResolutions = getResources().getStringArray(R.array.options_resolution_values)[videoResolutionSpinner.getSelectedItemPosition()].split(",");
             final int screenWidth = Integer.parseInt(videoResolutions[0]);
@@ -217,7 +257,7 @@ public class MainActivity extends Activity {
             final int screenDpi = Integer.parseInt(videoResolutions[2]);
             final int videoBitrate = getResources().getIntArray(R.array.options_bitrate_values)[videoBitrateSpinner.getSelectedItemPosition()];
 
-            Log.i(TAG, protocol + "://" + serverHost + ":" + REMOTE_SERVER_PORT);
+            // Log.i(TAG, protocol + "://" + serverHost + ":" + REMOTE_SERVER_PORT);
             Log.i(TAG, "VideoFormat:" + videoFormat);
             Log.i(TAG, "Bitrate:" + videoBitrate);
             Log.i(TAG, "ScreenWidth:" + screenWidth);
@@ -226,9 +266,14 @@ public class MainActivity extends Activity {
 
             intent.putExtra(ExtraIntent.RESULT_CODE.toString(), stateResultCode);
             intent.putExtra(ExtraIntent.RESULT_DATA.toString(), stateResultData);
-            intent.putExtra(ExtraIntent.PROTOCOL.toString(), protocol);
+            // intent.putExtra(ExtraIntent.PROTOCOL.toString(), protocol);
             intent.putExtra(ExtraIntent.PORT.toString(), REMOTE_SERVER_PORT);
-            intent.putExtra(ExtraIntent.SERVER_HOST.toString(), serverHost);
+            intent.putExtra(ExtraIntent.IPADDR1.toString(), ipaddr1);
+            intent.putExtra(ExtraIntent.IPADDR2.toString(), ipaddr2);
+            intent.putExtra(ExtraIntent.MANIFEST_FILE.toString(), manifest_file);
+            intent.putExtra(ExtraIntent.DURATION.toString(), duration);
+            intent.putExtra(ExtraIntent.IPC_PORT.toString(), ipc_port);
+            //
             intent.putExtra(ExtraIntent.VIDEO_FORMAT.toString(), videoFormat);
             intent.putExtra(ExtraIntent.SCREEN_WIDTH.toString(), screenWidth);
             intent.putExtra(ExtraIntent.SCREEN_HEIGHT.toString(), screenHeight);

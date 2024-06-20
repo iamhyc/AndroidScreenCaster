@@ -9,3 +9,7 @@
 .externalNativeBuild
 .idea/caches
 .idea/codeStyles
+.vscode
+
+NDK
+app/src/main/jniLibs

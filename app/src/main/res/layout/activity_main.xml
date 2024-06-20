@@ -1,98 +1,188 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.github.magicsih.androidscreencaster.MainActivity">
 
     <LinearLayout
-        android:layout_width="368dp"
-        android:layout_height="495dp"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteY="8dp"
-        tools:layout_editor_absoluteX="8dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView_protocol"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/label_protocol" />
-
-        <Spinner
-            android:id="@+id/spinner_protocol"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/options_protocols" />
-
-        <TextView
-            android:id="@+id/textView_server_addr"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/label_server_ip" />
-
-        <EditText
-            android:id="@+id/editText_server_host"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="none" />
-
-        <TextView
-            android:id="@+id/textView_video_format"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/label_video_format" />
-
-        <Spinner
-            android:id="@+id/spinner_video_format"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/options_format_keys" />
-
-        <TextView
-            android:id="@+id/textView_video_resolution"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/label_video_resolution" />
-
-        <Spinner
-            android:id="@+id/spinner_video_resolution"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/options_resolution_keys" />
-
-        <TextView
-            android:id="@+id/textView_video_bitrate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/label_video_bitrate" />
-
-        <Spinner
-            android:id="@+id/spinner_video_bitrate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/options_bitrate_keys" />
-
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:fillViewport="true">
 
-            <Button
-                android:id="@+id/button_stop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/action_stop" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/button_start"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/action_start" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/textView_manifest_file"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_manifest_file" />
 
+                <Spinner
+                    android:id="@+id/spinner_manifest"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/textView_duration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_duration" />
+
+                <EditText
+                    android:id="@+id/editText_duration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:text="10"
+                    tools:text="10" />
+
+                <TextView
+                    android:id="@+id/textView_ipc_port"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_ipc_port" />
+
+                <EditText
+                    android:id="@+id/editText_ipc_port"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="numberDecimal"
+                    android:text="11112"
+                    tools:text="11112" />
+
+                <TextView
+                    android:id="@+id/textView_target1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_target1" />
+
+                <EditText
+                    android:id="@+id/editText_target1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:text="127.0.0.1"
+                    tools:text="127.0.0.1" />
+
+                <TextView
+                    android:id="@+id/textView_target2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_target2" />
+
+                <EditText
+                    android:id="@+id/editText_target2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:text="127.0.0.1"
+                    tools:text="127.0.0.1" />
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="?android:attr/listDivider" />
+
+                <Spinner
+                    android:id="@+id/spinner_protocol"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/options_protocols" />
+
+                <TextView
+                    android:id="@+id/textView_video_format"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_video_format" />
+
+                <Spinner
+                    android:id="@+id/spinner_video_format"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/options_format_keys" />
+
+                <TextView
+                    android:id="@+id/textView_video_resolution"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_video_resolution" />
+
+                <Spinner
+                    android:id="@+id/spinner_video_resolution"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/options_resolution_keys" />
+
+                <TextView
+                    android:id="@+id/textView_video_bitrate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_video_bitrate" />
+
+                <Spinner
+                    android:id="@+id/spinner_video_bitrate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/options_bitrate_keys" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ToggleButton
+                        android:id="@+id/toggleButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="ToggleButton"
+                        android:textOff="TX"
+                        android:textOn="RX" />
+
+                    <Button
+                        android:id="@+id/button_stop"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/action_stop" />
+
+                    <Button
+                        android:id="@+id/button_start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/action_start" />
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/divider2"
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="?android:attr/listDivider" />
+
+                <VideoView
+                    android:id="@+id/videoView"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" />
+
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

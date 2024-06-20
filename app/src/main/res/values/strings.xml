@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">ScreenCaster</string>
-    <string name="label_protocol">Protocol</string>
+    <string name="label_manifest_file">Manifest File</string>
+    <string name="label_duration">Duration (seconds)</string>
+    <string name="label_ipc_port">IPC Port Number</string>
     <string name="label_server_ip">Server IP</string>
+    <string name="label_target1">Target Address 1</string>
+    <string name="label_target2">Target Address 2</string>
     <string name="label_video_format">Format</string>
     <string name="label_video_resolution">Resolution</string>
     <string name="label_video_bitrate">Bitrate</string>

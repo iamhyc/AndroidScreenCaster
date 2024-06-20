@@ -1,3 +1,18 @@
+### Setup Instructions
+- JDK 11
+- `source env.sh` for NDK related build
+  ```bash
+  # https://mozilla.github.io/firefox-browser-architecture/experiments/2017-09-21-rust-on-android.html
+  ${NDK_HOME}/build/tools/make_standalone_toolchain.py --api 26 --arch arm64 --install-dir NDK/arm64
+  ```
+
+### TODO
+- [x] read assets file in dynamic library (wih NDK)
+- [ ] 
+- [ ] `ffplay` initial waiting time is too large (sync or buffer problem?)
+
+----
+
 # Android Screen Caster - Low Latency Screen Mirroring
 
 AndroidScreenCaster is a live screen casting solution for Android devices, with efficient H.264 and WebM encoding via TCP and UDP. Experience low latency streaming to your browser or server for mobile games, presentations, or any other application where real-time screen mirroring is needed.
