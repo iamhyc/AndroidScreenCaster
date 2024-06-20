@@ -244,18 +244,6 @@ public final class ScreenCastService extends Service {
     }
 
     private void sendData(byte[] header, byte[] data) {
-    //    if(socketOutputStream != null) {
-    //        try {
-    //            if(header != null) {
-    //                socketOutputStream.write(header);
-    //            }
-    //            socketOutputStream.write(data);
-    //        } catch (IOException e) {
-    //            Log.e(TAG, "Failed to write data to tcp socket, stop casting");
-    //            e.printStackTrace();
-    //            stopScreenCapture();
-    //        }
-
         // if(header != null) {
         //     byte[] headerAndBody = new byte[header.length + data.length];
         //     System.arraycopy(header, 0, headerAndBody, 0, header.length);
@@ -264,9 +252,6 @@ public final class ScreenCastService extends Service {
         // } else{
         //     _socket_.send(data);
         // }
-
-        // Log.e(TAG, "Both tcp and udp socket are not available.");
-        // stopScreenCapture();
     }
 
     private void stopScreenCapture() {

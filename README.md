@@ -1,14 +1,18 @@
 ### Setup Instructions
-- JDK 11
+- JDK 11 (11.0.14.1-jbr)
 - `source env.sh` for NDK related build
-  ```bash
+  ```toml
+  # `$HOME/.cargo/config` file
   # https://mozilla.github.io/firefox-browser-architecture/experiments/2017-09-21-rust-on-android.html
-  ${NDK_HOME}/build/tools/make_standalone_toolchain.py --api 26 --arch arm64 --install-dir NDK/arm64
+  [target.aarch64-linux-android]
+  ar = "$HOME/Android/Sdk/ndk/26.3.11579264/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android-ar"
+  linker = "$HOME/Android/Sdk/ndk/26.3.11579264/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android26-clang"
   ```
 
 ### TODO
-- [x] read assets file in dynamic library (wih NDK)
-- [ ] 
+- [ ] android shared memory ring buffer for data transfer
+- [ ] bind `rx.rs` service and switch service via toggle button
+- [ ] Use [AndroidX Media3](https://github.com/androidx/media) for live stream playing
 - [ ] `ffplay` initial waiting time is too large (sync or buffer problem?)
 
 ----
