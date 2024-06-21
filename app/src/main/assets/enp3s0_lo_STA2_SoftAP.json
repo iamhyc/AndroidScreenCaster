@@ -6,7 +6,7 @@
   "streams": [
     {
       "type": "UDP",
-      "npy_file": "proj_50_Mbps.npy",
+      "npy_file": "stream://test",
       "tos": 128,
       "port": 6204,
       "throttle": 0,

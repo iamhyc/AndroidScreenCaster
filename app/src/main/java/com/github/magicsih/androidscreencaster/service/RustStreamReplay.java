@@ -12,10 +12,16 @@ public class RustStreamReplay {
             final int ipc_port
     );
 
+    private static native void send(final String name, final byte[] data);
+
     public static void startReplay(
             final AssetManager assets,
             String manifest_file, String ipaddr1, String ipaddr2, float duration, int ipc_port
     ) {
         start(assets, manifest_file, ipaddr1, ipaddr2, duration, ipc_port);
+    }
+
+    public static void sendData(String name, byte[] data) {
+        send(data);
     }
 }
