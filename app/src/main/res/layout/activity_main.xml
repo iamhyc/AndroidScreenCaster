@@ -44,8 +44,8 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:inputType="number"
-                    android:text="10"
-                    tools:text="10" />
+                    android:text="30"
+                    tools:text="30" />
 
                 <TextView
                     android:id="@+id/textView_ipc_port"
@@ -98,12 +98,6 @@
                     android:layout_height="3dp"
                     android:background="?android:attr/listDivider" />
 
-                <Spinner
-                    android:id="@+id/spinner_protocol"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:entries="@array/options_protocols" />
-
                 <TextView
                     android:id="@+id/textView_video_format"
                     android:layout_width="match_parent"
@@ -145,28 +139,29 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
+                    <CheckBox
+                        android:id="@+id/checkBox_tx"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="Tx" />
+
+                    <CheckBox
+                        android:id="@+id/checkBox_rx"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Rx" />
+
                     <ToggleButton
                         android:id="@+id/toggleButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="ToggleButton"
-                        android:textOff="TX"
-                        android:textOn="RX" />
-
-                    <Button
-                        android:id="@+id/button_stop"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/action_stop" />
-
-                    <Button
-                        android:id="@+id/button_start"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/action_start" />
+                        android:textOff="@string/action_start"
+                        android:textOn="@string/action_stop" />
 
                 </LinearLayout>
 

@@ -22,6 +22,6 @@ public class RustStreamReplay {
     }
 
     public static void sendData(String name, byte[] data) {
-        send(data);
+        send(name, data);
     }
 }

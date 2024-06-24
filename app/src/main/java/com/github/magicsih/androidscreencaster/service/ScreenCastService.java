@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.SharedMemory;
 import android.util.Log;
 import android.view.Surface;
 
@@ -32,7 +31,6 @@ import java.nio.ByteBuffer;
  */
 public final class ScreenCastService extends Service {
 
-    private static final int SHMEM_SIZE = 1024*1024; // 1MB
     private static final int FPS = 30;
     private final String TAG = "ScreenCastService";
 
@@ -46,8 +44,6 @@ public final class ScreenCastService extends Service {
     private MediaCodec.BufferInfo videoBufferInfo;
     private MediaCodec encoder;
     private IvfWriter ivf;
-
-    private SharedMemory sharedMemory;
 
     private int remotePort;
 
@@ -117,10 +113,7 @@ public final class ScreenCastService extends Service {
 
         Log.i(TAG, "Start casting with format:" + format + ", screen:" + screenWidth +"x"+screenHeight +" @ " + screenDpi + " bitrate:" + bitrate);
 
-        this.sharedMemory = SharedMemory.create("shared_memory", SHMEM_SIZE);
-        final ParcelFileDescriptor pfd = sharedMemory.getFileDescriptor();
-        final FileDescriptor fd = pfd.getFileDescriptor();
-        RustStreamReplay.startReplay(getAssets(), manifestFile, ipaddr1, ipaddr2, duration, ipcPort, fd);
+        RustStreamReplay.startReplay(getAssets(), manifestFile, ipaddr1, ipaddr2, duration, ipcPort);
         
         startScreenCapture(resultCode, resultData, format, screenWidth, screenHeight, screenDpi, bitrate);
 
@@ -255,9 +248,9 @@ public final class ScreenCastService extends Service {
             byte[] headerAndBody = new byte[header.length + data.length];
             System.arraycopy(header, 0, headerAndBody, 0, header.length);
             System.arraycopy(data, 0, headerAndBody, header.length, data.length);
-            RustStreamReplay.send("stream://test", headerAndBody);
+            RustStreamReplay.sendData("stream://test", headerAndBody);
         } else{
-            RustStreamReplay.send("stream://test", data);
+            RustStreamReplay.sendData("stream://test", data);
         }
     }
 

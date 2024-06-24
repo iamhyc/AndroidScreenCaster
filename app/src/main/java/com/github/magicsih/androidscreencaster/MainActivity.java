@@ -14,10 +14,12 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ToggleButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -36,8 +38,6 @@ public class MainActivity extends Activity {
 
     private static final String PREFERENCE_KEY = "default";
     private static final String PREFERENCE_MANIFEST = "manifest";
-    private static final String PREFERENCE_PROTOCOL = "protocol";
-    private static final String PREFERENCE_SERVER_HOST = "server_host";
     private static final String PREFERENCE_SPINNER_FORMAT = "spinner_format";
     private static final String PREFERENCE_SPINNER_RESOLUTION = "spinner_resolution";
     private static final String PREFERENCE_SPINNER_BITRATE = "spinner_bitrate";
@@ -104,32 +104,19 @@ public class MainActivity extends Activity {
             }
         };
 
-        final EditText editTextServerHost = (EditText) findViewById(R.id.editText_target1);
-        final Button startButton = (Button) findViewById(R.id.button_start);
-
-        startButton.setOnClickListener(new View.OnClickListener() {
+        final ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+        toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                Log.d(TAG, "Start button clicked.");
-
-                final String serverHost = editTextServerHost.getText().toString();
-                context.getSharedPreferences(PREFERENCE_KEY, 0).edit().putString(PREFERENCE_SERVER_HOST, serverHost).apply();
-                startCaptureScreen();
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Log.d(TAG, "Start button clicked.");
+                    startCaptureScreen();
+                } else {
+                    stopScreenCapture();
+                }
             }
         });
 
-        final Button stopButton  = (Button) findViewById(R.id.button_stop);
-        stopButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                stopScreenCapture();
-            }
-        });
-
-        editTextServerHost.setText(context.getSharedPreferences(PREFERENCE_KEY, 0).getString(PREFERENCE_SERVER_HOST, ""));
-
-        // setSpinnerFromResId(R.array.options_protocols,R.id.spinner_protocol, PREFERENCE_PROTOCOL);
         setSpinnerFromResId(R.array.options_format_keys, R.id.spinner_video_format, PREFERENCE_SPINNER_FORMAT);
         setSpinnerFromResId(R.array.options_resolution_keys,R.id.spinner_video_resolution, PREFERENCE_SPINNER_RESOLUTION);
         setSpinnerFromResId(R.array.options_bitrate_keys, R.id.spinner_video_bitrate, PREFERENCE_SPINNER_BITRATE);
@@ -138,7 +125,7 @@ public class MainActivity extends Activity {
         final AssetManager assets = this.getAssets();
         List<CharSequence> manifestFiles = new ArrayList<>();
         try {
-            final String[] assetFiles = assets.list("");
+            final String[] assetFiles = assets.list("manifest");
             for (String file: assetFiles) {
                 if (file.endsWith(".json")) {
                     manifestFiles.add(file);
@@ -244,20 +231,26 @@ public class MainActivity extends Activity {
         final Intent intent = new Intent(this, ScreenCastService.class);
 
         if(stateResultCode != 0 && stateResultData != null) {
-            // final Spinner protocolSpinner = (Spinner) findViewById(R.id.spinner_protocol);
             final Spinner videoFormatSpinner = (Spinner) findViewById(R.id.spinner_video_format);
             final Spinner videoResolutionSpinner = (Spinner) findViewById(R.id.spinner_video_resolution);
             final Spinner videoBitrateSpinner = (Spinner) findViewById(R.id.spinner_video_bitrate);
 
-            // final String protocol = protocolSpinner.getSelectedItem().toString().toLowerCase();
+            int screenWidth = 0, screenHeight = 0, screenDpi = 0;
+            if ( videoResolutionSpinner.getSelectedItem().toString() == "Native" ) {
+                DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+                screenHeight = displayMetrics.heightPixels;
+                screenWidth = displayMetrics.widthPixels;
+                screenDpi = displayMetrics.densityDpi;
+            } else {
+                final String[] videoResolutions = getResources().getStringArray(R.array.options_resolution_values)[videoResolutionSpinner.getSelectedItemPosition()].split(",");
+                screenWidth = Integer.parseInt(videoResolutions[0]);
+                screenHeight = Integer.parseInt(videoResolutions[1]);
+                screenDpi = Integer.parseInt(videoResolutions[2]);
+            }
+
             final String videoFormat = getResources().getStringArray(R.array.options_format_values)[videoFormatSpinner.getSelectedItemPosition()];
-            final String[] videoResolutions = getResources().getStringArray(R.array.options_resolution_values)[videoResolutionSpinner.getSelectedItemPosition()].split(",");
-            final int screenWidth = Integer.parseInt(videoResolutions[0]);
-            final int screenHeight = Integer.parseInt(videoResolutions[1]);
-            final int screenDpi = Integer.parseInt(videoResolutions[2]);
             final int videoBitrate = getResources().getIntArray(R.array.options_bitrate_values)[videoBitrateSpinner.getSelectedItemPosition()];
 
-            // Log.i(TAG, protocol + "://" + serverHost + ":" + REMOTE_SERVER_PORT);
             Log.i(TAG, "VideoFormat:" + videoFormat);
             Log.i(TAG, "Bitrate:" + videoBitrate);
             Log.i(TAG, "ScreenWidth:" + screenWidth);
@@ -266,7 +259,6 @@ public class MainActivity extends Activity {
 
             intent.putExtra(ExtraIntent.RESULT_CODE.toString(), stateResultCode);
             intent.putExtra(ExtraIntent.RESULT_DATA.toString(), stateResultData);
-            // intent.putExtra(ExtraIntent.PROTOCOL.toString(), protocol);
             intent.putExtra(ExtraIntent.PORT.toString(), REMOTE_SERVER_PORT);
             intent.putExtra(ExtraIntent.IPADDR1.toString(), ipaddr1);
             intent.putExtra(ExtraIntent.IPADDR2.toString(), ipaddr2);

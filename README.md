@@ -1,5 +1,9 @@
 ### Setup Instructions
 - JDK 11 (11.0.14.1-jbr)
+- rustup add target build
+  ```bash
+  rustup target add aarch64-linux-android
+  ```
 - `source env.sh` for NDK related build
   ```toml
   # `$HOME/.cargo/config` file
