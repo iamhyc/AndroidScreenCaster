@@ -14,38 +14,20 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="100"
             android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textView_manifest_file"
+                    android:id="@+id/textView_genera"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/label_manifest_file" />
-
-                <Spinner
-                    android:id="@+id/spinner_manifest"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:id="@+id/textView_duration"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_duration" />
-
-                <EditText
-                    android:id="@+id/editText_duration"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="number"
-                    android:text="30"
-                    tools:text="30" />
+                    android:gravity="center"
+                    android:text="General" />
 
                 <TextView
                     android:id="@+id/textView_ipc_port"
@@ -63,19 +45,75 @@
                     tools:text="11112" />
 
                 <TextView
+                    android:id="@+id/textView_duration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_duration" />
+
+                <EditText
+                    android:id="@+id/editText_duration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:text="30"
+                    tools:text="30" />
+
+                <View
+                    android:id="@+id/divider_general"
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="?android:attr/listDivider" />
+
+                <TextView
+                    android:id="@+id/textView_tx"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="TX Parameters" />
+
+                <TextView
+                    android:id="@+id/textView_manifest_file"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_manifest_file" />
+
+                <Spinner
+                    android:id="@+id/spinner_manifest"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
                     android:id="@+id/textView_target1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/label_target1" />
 
-                <EditText
-                    android:id="@+id/editText_target1"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="text"
-                    android:text="127.0.0.1"
-                    tools:text="127.0.0.1" />
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/editText_target1_tx"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:inputType="text"
+                        android:text="127.0.0.1"
+                        tools:text="127.0.0.1" />
+
+                    <EditText
+                        android:id="@+id/editText_target1_rx"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:inputType="text"
+                        android:text="127.0.0.1"
+                        tools:text="127.0.0.1" />
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/textView_target2"
@@ -83,20 +121,30 @@
                     android:layout_height="wrap_content"
                     android:text="@string/label_target2" />
 
-                <EditText
-                    android:id="@+id/editText_target2"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="text"
-                    android:text="127.0.0.1"
-                    tools:text="127.0.0.1" />
+                    android:orientation="horizontal">
 
-                <View
-                    android:id="@+id/divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:background="?android:attr/listDivider" />
+                    <EditText
+                        android:id="@+id/editText_target2_tx"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:inputType="text"
+                        android:text="127.0.0.1"
+                        tools:text="127.0.0.1" />
+
+                    <EditText
+                        android:id="@+id/editText_target2_rx"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:inputType="text"
+                        android:text="127.0.0.1"
+                        tools:text="127.0.0.1" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/textView_video_format"
@@ -134,50 +182,153 @@
                     android:layout_height="wrap_content"
                     android:entries="@array/options_bitrate_keys" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <CheckBox
-                        android:id="@+id/checkBox_tx"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:checked="true"
-                        android:text="Tx" />
-
-                    <CheckBox
-                        android:id="@+id/checkBox_rx"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Rx" />
-
-                    <ToggleButton
-                        android:id="@+id/toggleButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="ToggleButton"
-                        android:textOff="@string/action_start"
-                        android:textOn="@string/action_stop" />
-
-                </LinearLayout>
-
                 <View
-                    android:id="@+id/divider2"
+                    android:id="@+id/divider_tx"
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
                     android:background="?android:attr/listDivider" />
 
-                <VideoView
-                    android:id="@+id/videoView"
+                <TextView
+                    android:id="@+id/textView_rx"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp" />
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="RX Parameters" />
+
+                <TextView
+                    android:id="@+id/textView_rx_ports"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="RX Ports" />
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <CheckBox
+                            android:id="@+id/checkBox_rtt1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="calc_rtt" />
+
+                        <EditText
+                            android:id="@+id/editText_rx1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:gravity="center"
+                            android:hint="RX Port 1"
+                            android:inputType="numberDecimal" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <CheckBox
+                            android:id="@+id/checkBox_rtt2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="calc_rtt" />
+
+                        <EditText
+                            android:id="@+id/editText_rx2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:gravity="center|center_vertical"
+                            android:hint="RX Port 2"
+                            android:inputType="numberDecimal" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <CheckBox
+                            android:id="@+id/checkBox_rtt3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="calc_rtt" />
+
+                        <EditText
+                            android:id="@+id/editText_rx3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:gravity="center|center_vertical"
+                            android:hint="RX Port 3"
+                            android:inputType="numberDecimal" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <CheckBox
+                            android:id="@+id/checkBox_rtt4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="calc_rtt" />
+
+                        <EditText
+                            android:id="@+id/editText_rx4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:gravity="center|center_vertical"
+                            android:hint="RX Port 4"
+                            android:inputType="numberDecimal" />
+                    </TableRow>
+                </TableLayout>
+
 
             </LinearLayout>
         </ScrollView>
+
+        <View
+            android:id="@+id/divider4"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_weight="1"
+            android:background="?android:attr/listDivider" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/checkBox_tx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Tx" />
+
+            <CheckBox
+                android:id="@+id/checkBox_rx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Rx" />
+
+            <ToggleButton
+                android:id="@+id/toggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="ToggleButton"
+                android:textOff="@string/action_start"
+                android:textOn="@string/action_stop" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -105,15 +105,17 @@ public final class ScreenCastService extends Service {
         final int screenDpi = intent.getIntExtra(ExtraIntent.SCREEN_DPI.toString(), 96);
         final int bitrate = intent.getIntExtra(ExtraIntent.VIDEO_BITRATE.toString(), 1024000);
 
-        final String ipaddr1 = intent.getStringExtra(ExtraIntent.IPADDR1.toString());
-        final String ipaddr2 = intent.getStringExtra(ExtraIntent.IPADDR2.toString());
+        final String ipaddr1_tx = intent.getStringExtra(ExtraIntent.IPADDR1_TX.toString());
+        final String ipaddr1_rx = intent.getStringExtra(ExtraIntent.IPADDR1_RX.toString());
+        final String ipaddr2_tx = intent.getStringExtra(ExtraIntent.IPADDR2_TX.toString());
+        final String ipaddr2_rx = intent.getStringExtra(ExtraIntent.IPADDR2_RX.toString());
         final String manifestFile = intent.getStringExtra(ExtraIntent.MANIFEST_FILE.toString());
         final float duration = intent.getFloatExtra(ExtraIntent.DURATION.toString(), 10);
         final int ipcPort = intent.getIntExtra(ExtraIntent.IPC_PORT.toString(), 11112);
 
         Log.i(TAG, "Start casting with format:" + format + ", screen:" + screenWidth +"x"+screenHeight +" @ " + screenDpi + " bitrate:" + bitrate);
 
-        RustStreamReplay.startReplay(getAssets(), manifestFile, ipaddr1, ipaddr2, duration, ipcPort);
+        RustStreamReplay.startReplay(getAssets(), manifestFile, ipaddr1_tx, ipaddr1_rx, ipaddr2_rx, ipaddr2_rx, duration, ipcPort); //FIXME: in new process?
         
         startScreenCapture(resultCode, resultData, format, screenWidth, screenHeight, screenDpi, bitrate);
 

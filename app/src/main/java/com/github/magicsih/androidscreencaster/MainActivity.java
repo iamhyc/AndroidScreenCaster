@@ -18,10 +18,11 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ToggleButton;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.ToggleButton;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -110,7 +111,48 @@ public class MainActivity extends Activity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.d(TAG, "Start button clicked.");
-                    startCaptureScreen();
+
+                    final CheckBox checkBox_tx = (CheckBox) findViewById(R.id.checkBox_tx);
+                    final CheckBox checkBox_rx = (CheckBox) findViewById(R.id.checkBox_rx);
+
+                    if (checkBox_tx.isChecked()) {
+                        startCaptureScreen();
+                    } else if (checkBox_rx.isChecked()) {
+                        final EditText editText_duration = (EditText) findViewById(R.id.editText_duration);
+                        final int duration = Integer.parseInt(editText_duration.getText().toString());
+                        // check 1st target
+                        final CheckBox checkBox_rtt1 = (CheckBox) findViewById(R.id.checkBox_rtt1);
+                        final EditText editText_rx1 = (EditText) findViewById(R.id.editText_rx1);
+                        if (!editText_rx1.getText().toString().isEmpty()) {
+                            final int port1 = Integer.parseInt(editText_rx1.getText().toString());
+                            // RustStreamReplay.startReceiver(port1, duration, checkBox_rtt1.isChecked());
+                        }
+                        // check 2nd target
+                        final CheckBox checkBox_rtt2 = (CheckBox) findViewById(R.id.checkBox_rtt2);
+                        final EditText editText_rx2 = (EditText) findViewById(R.id.editText_rx2);
+                        if (!editText_rx2.getText().toString().isEmpty()) {
+                            final int port2 = Integer.parseInt(editText_rx2.getText().toString());
+                            // RustStreamReplay.startReceiver(port2, duration, checkBox_rtt2.isChecked());
+                        }
+                        // check 3rd target
+                        final CheckBox checkBox_rtt3 = (CheckBox) findViewById(R.id.checkBox_rtt3);
+                        final EditText editText_rx3 = (EditText) findViewById(R.id.editText_rx3);
+                        if (!editText_rx3.getText().toString().isEmpty()) {
+                            final int port3 = Integer.parseInt(editText_rx3.getText().toString());
+                            // RustStreamReplay.startReceiver(port3, duration, checkBox_rtt3.isChecked());
+                        }
+                        // check 4th target
+                        final CheckBox checkBox_rtt4 = (CheckBox) findViewById(R.id.checkBox_rtt4);
+                        final EditText editText_rx4 = (EditText) findViewById(R.id.editText_rx4);
+                        if (!editText_rx4.getText().toString().isEmpty()) {
+                            final int port4 = Integer.parseInt(editText_rx4.getText().toString());
+                            // RustStreamReplay.startReceiver(port4, duration, checkBox_rtt4.isChecked());
+                        }
+                    } else {
+                        toggleButton.setChecked(false);
+                        Log.e(TAG, "Neither tx nor rx is checked.");
+                    }
+
                 } else {
                     stopScreenCapture();
                 }
@@ -212,10 +254,10 @@ public class MainActivity extends Activity {
     }
 
     private void startService() {
-        final EditText editText_target1 = (EditText) findViewById(R.id.editText_target1);
-        final EditText editText_target2 = (EditText) findViewById(R.id.editText_target2);
-        final String ipaddr1 = editText_target1.getText().toString();
-        final String ipaddr2 = editText_target2.getText().toString();
+        final String ipaddr1_tx = ((EditText) findViewById(R.id.editText_target1_tx)).getText().toString();
+        final String ipaddr1_rx = ((EditText) findViewById(R.id.editText_target1_rx)).getText().toString();
+        final String ipaddr2_tx = ((EditText) findViewById(R.id.editText_target2_tx)).getText().toString();
+        final String ipaddr2_rx = ((EditText) findViewById(R.id.editText_target2_rx)).getText().toString();
 
         final Spinner manifestSpinner = (Spinner) findViewById(R.id.spinner_manifest);
         final String manifest_file = manifestSpinner.getSelectedItem().toString();
@@ -260,8 +302,10 @@ public class MainActivity extends Activity {
             intent.putExtra(ExtraIntent.RESULT_CODE.toString(), stateResultCode);
             intent.putExtra(ExtraIntent.RESULT_DATA.toString(), stateResultData);
             intent.putExtra(ExtraIntent.PORT.toString(), REMOTE_SERVER_PORT);
-            intent.putExtra(ExtraIntent.IPADDR1.toString(), ipaddr1);
-            intent.putExtra(ExtraIntent.IPADDR2.toString(), ipaddr2);
+            intent.putExtra(ExtraIntent.IPADDR1_TX.toString(), ipaddr1_tx);
+            intent.putExtra(ExtraIntent.IPADDR1_RX.toString(), ipaddr1_rx);
+            intent.putExtra(ExtraIntent.IPADDR2_TX.toString(), ipaddr2_tx);
+            intent.putExtra(ExtraIntent.IPADDR2_RX.toString(), ipaddr2_rx);
             intent.putExtra(ExtraIntent.MANIFEST_FILE.toString(), manifest_file);
             intent.putExtra(ExtraIntent.DURATION.toString(), duration);
             intent.putExtra(ExtraIntent.IPC_PORT.toString(), ipc_port);
