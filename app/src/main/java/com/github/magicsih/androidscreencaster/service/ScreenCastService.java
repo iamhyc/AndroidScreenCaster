@@ -45,8 +45,6 @@ public final class ScreenCastService extends Service {
     private MediaCodec encoder;
     private IvfWriter ivf;
 
-    private int remotePort;
-
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "onBind");
@@ -76,6 +74,8 @@ public final class ScreenCastService extends Service {
         super.onCreate();
         Log.d(TAG, "onCreate");
 
+        System.loadLibrary("replay");
+
         mediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
     }
 
@@ -91,8 +91,6 @@ public final class ScreenCastService extends Service {
         if (intent == null) {
             return START_NOT_STICKY;
         }
-
-        remotePort = intent.getIntExtra(ExtraIntent.PORT.toString(), 49152);
 
         final int resultCode = intent.getIntExtra(ExtraIntent.RESULT_CODE.toString(), -1);
         final Intent resultData = intent.getParcelableExtra(ExtraIntent.RESULT_DATA.toString());
@@ -115,8 +113,8 @@ public final class ScreenCastService extends Service {
 
         Log.i(TAG, "Start casting with format:" + format + ", screen:" + screenWidth +"x"+screenHeight +" @ " + screenDpi + " bitrate:" + bitrate);
 
-        RustStreamReplay.startReplay(getAssets(), manifestFile, ipaddr1_tx, ipaddr1_rx, ipaddr2_rx, ipaddr2_rx, duration, ipcPort); //FIXME: in new process?
-        
+        RustStreamReplay.startReplay(getAssets(), manifestFile, ipaddr1_tx, ipaddr1_rx, ipaddr2_rx, ipaddr2_rx, duration, ipcPort);
+
         startScreenCapture(resultCode, resultData, format, screenWidth, screenHeight, screenDpi, bitrate);
 
         return START_STICKY;

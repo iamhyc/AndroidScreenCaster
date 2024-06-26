@@ -207,7 +207,7 @@
 
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
                         <CheckBox
                             android:id="@+id/checkBox_rtt1"
@@ -227,7 +227,7 @@
 
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
                         <CheckBox
                             android:id="@+id/checkBox_rtt2"
@@ -247,7 +247,7 @@
 
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
                         <CheckBox
                             android:id="@+id/checkBox_rtt3"
@@ -267,7 +267,7 @@
 
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
                         <CheckBox
                             android:id="@+id/checkBox_rtt4"

@@ -30,12 +30,11 @@ import java.util.ArrayList;
 import com.github.magicsih.androidscreencaster.consts.ActivityServiceMessage;
 import com.github.magicsih.androidscreencaster.consts.ExtraIntent;
 import com.github.magicsih.androidscreencaster.service.ScreenCastService;
+import com.github.magicsih.androidscreencaster.service.RustStreamReplay;
 
 public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";
-
-    private final int REMOTE_SERVER_PORT = 49152;
 
     private static final String PREFERENCE_KEY = "default";
     private static final String PREFERENCE_MANIFEST = "manifest";
@@ -117,38 +116,42 @@ public class MainActivity extends Activity {
 
                     if (checkBox_tx.isChecked()) {
                         startCaptureScreen();
-                    } else if (checkBox_rx.isChecked()) {
+                    }
+                    if (checkBox_rx.isChecked()) {
                         final EditText editText_duration = (EditText) findViewById(R.id.editText_duration);
                         final int duration = Integer.parseInt(editText_duration.getText().toString());
+                        //FIXME: check if the target is empty via iterator
                         // check 1st target
                         final CheckBox checkBox_rtt1 = (CheckBox) findViewById(R.id.checkBox_rtt1);
                         final EditText editText_rx1 = (EditText) findViewById(R.id.editText_rx1);
                         if (!editText_rx1.getText().toString().isEmpty()) {
                             final int port1 = Integer.parseInt(editText_rx1.getText().toString());
-                            // RustStreamReplay.startReceiver(port1, duration, checkBox_rtt1.isChecked());
+                            RustStreamReplay.startReceiver(port1, duration, checkBox_rtt1.isChecked(), false);
                         }
                         // check 2nd target
                         final CheckBox checkBox_rtt2 = (CheckBox) findViewById(R.id.checkBox_rtt2);
                         final EditText editText_rx2 = (EditText) findViewById(R.id.editText_rx2);
                         if (!editText_rx2.getText().toString().isEmpty()) {
                             final int port2 = Integer.parseInt(editText_rx2.getText().toString());
-                            // RustStreamReplay.startReceiver(port2, duration, checkBox_rtt2.isChecked());
+                            RustStreamReplay.startReceiver(port2, duration, checkBox_rtt2.isChecked(), false);
                         }
                         // check 3rd target
                         final CheckBox checkBox_rtt3 = (CheckBox) findViewById(R.id.checkBox_rtt3);
                         final EditText editText_rx3 = (EditText) findViewById(R.id.editText_rx3);
                         if (!editText_rx3.getText().toString().isEmpty()) {
                             final int port3 = Integer.parseInt(editText_rx3.getText().toString());
-                            // RustStreamReplay.startReceiver(port3, duration, checkBox_rtt3.isChecked());
+                            RustStreamReplay.startReceiver(port3, duration, checkBox_rtt3.isChecked(), false);
                         }
                         // check 4th target
                         final CheckBox checkBox_rtt4 = (CheckBox) findViewById(R.id.checkBox_rtt4);
                         final EditText editText_rx4 = (EditText) findViewById(R.id.editText_rx4);
                         if (!editText_rx4.getText().toString().isEmpty()) {
                             final int port4 = Integer.parseInt(editText_rx4.getText().toString());
-                            // RustStreamReplay.startReceiver(port4, duration, checkBox_rtt4.isChecked());
+                            RustStreamReplay.startReceiver(port4, duration, checkBox_rtt4.isChecked(), false);
                         }
-                    } else {
+                    }
+
+                    if (!checkBox_tx.isChecked() && !checkBox_rx.isChecked()) {
                         toggleButton.setChecked(false);
                         Log.e(TAG, "Neither tx nor rx is checked.");
                     }
@@ -301,7 +304,6 @@ public class MainActivity extends Activity {
 
             intent.putExtra(ExtraIntent.RESULT_CODE.toString(), stateResultCode);
             intent.putExtra(ExtraIntent.RESULT_DATA.toString(), stateResultData);
-            intent.putExtra(ExtraIntent.PORT.toString(), REMOTE_SERVER_PORT);
             intent.putExtra(ExtraIntent.IPADDR1_TX.toString(), ipaddr1_tx);
             intent.putExtra(ExtraIntent.IPADDR1_RX.toString(), ipaddr1_rx);
             intent.putExtra(ExtraIntent.IPADDR2_TX.toString(), ipaddr2_tx);
