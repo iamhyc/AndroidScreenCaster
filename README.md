@@ -1,12 +1,12 @@
 ### Setup Instructions
 - JDK 11 (11.0.14.1-jbr)
+- NDK 26.3.11579264
 - rustup add target build
   ```bash
   rustup target add aarch64-linux-android
   ```
-- `source env.sh` for NDK related build
+- replace `$HOME` with absolute path and append to `$HOME/.cargo/config.toml`
   ```toml
-  # `$HOME/.cargo/config` file
   # https://mozilla.github.io/firefox-browser-architecture/experiments/2017-09-21-rust-on-android.html
   [target.aarch64-linux-android]
   ar = "$HOME/Android/Sdk/ndk/26.3.11579264/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android-ar"
@@ -14,10 +14,7 @@
   ```
 
 ### TODO
-- [ ] android shared memory ring buffer for data transfer
-- [ ] bind `rx.rs` service and switch service via toggle button
 - [ ] Use [AndroidX Media3](https://github.com/androidx/media) for live stream playing
-- [ ] `ffplay` initial waiting time is too large (sync or buffer problem?)
 
 ----
 
