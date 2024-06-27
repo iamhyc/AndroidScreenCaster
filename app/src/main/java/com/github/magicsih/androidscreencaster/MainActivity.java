@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.AssetManager;
 import android.media.projection.MediaProjectionManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -24,8 +25,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
 
-import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.common.MediaItem;
+import androidx.media3.common.util.UnstableApi;
 import androidx.media3.ui.PlayerView;
+import androidx.media3.exoplayer.source.ProgressiveMediaSource;
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.source.MediaSource;
+import androidx.media3.datasource.DataSource;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -34,6 +40,7 @@ import com.github.magicsih.androidscreencaster.consts.ActivityServiceMessage;
 import com.github.magicsih.androidscreencaster.consts.ExtraIntent;
 import com.github.magicsih.androidscreencaster.service.ScreenCastService;
 import com.github.magicsih.androidscreencaster.service.RustStreamReplay;
+import com.github.magicsih.androidscreencaster.service.StreamDataSource;
 
 public class MainActivity extends Activity {
 
@@ -60,7 +67,7 @@ public class MainActivity extends Activity {
     private ServiceConnection serviceConnection;
     private Messenger serviceMessenger;
 
-    @Override
+    @UnstableApi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -107,6 +114,25 @@ public class MainActivity extends Activity {
             }
         };
 
+        // initialize ExoPlayer
+        final ExoPlayer player = new ExoPlayer.Builder(context, MediaSource.Factory.UNSUPPORTED).build();
+        final StreamDataSource dataSource = new StreamDataSource();
+        DataSource.Factory dataSourceFactory = new DataSource.Factory() {
+            @Override
+            public DataSource createDataSource() {
+                return dataSource;
+            }
+        };
+        // Reference: https://developer.android.com/media/media3/exoplayer/progressive
+        // Reference: https://developer.android.com/media/media3/exoplayer/shrinking#java
+        MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory)
+                                        .createMediaSource(MediaItem.fromUri(Uri.EMPTY));
+        player.setMediaSource(mediaSource);
+        player.prepare();
+        // set player to PlayerView
+        final PlayerView playerView = (PlayerView) findViewById(R.id.player_view);
+        playerView.setPlayer(player);
+
         final ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -141,6 +167,8 @@ public class MainActivity extends Activity {
                                 RustStreamReplay.startReceiver(port, duration, calc_rtt, rx_mode);
                             }
                         }
+
+                        player.play();
                     }
 
                     if (!checkBox_tx.isChecked() && !checkBox_rx.isChecked()) {
@@ -150,6 +178,7 @@ public class MainActivity extends Activity {
 
                 } else {
                     stopScreenCapture();
+                    player.stop();
                 }
             }
         });
@@ -174,13 +203,6 @@ public class MainActivity extends Activity {
         } catch (Exception e) {
             Log.e(TAG, "Failed to list assets due to:" + e.toString());
         }
-
-        // initialize ExoPlayer
-        final ExoPlayer player = new ExoPlayer.Builder(context).build();
-        final PlayerView playerView = (PlayerView) findViewById(R.id.player_view);
-        playerView.setPlayer(player);
-
-        // startService();
     }
 
     @Override

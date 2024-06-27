@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ScreenCaster</string>
+    <string name="app_name">Stream Replay</string>
     <string name="label_manifest_file">Manifest File</string>
     <string name="label_duration">Duration (seconds)</string>
     <string name="label_ipc_port">IPC Port Number</string>
