@@ -24,6 +24,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
 
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.ui.PlayerView;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -117,37 +120,26 @@ public class MainActivity extends Activity {
                     if (checkBox_tx.isChecked()) {
                         startCaptureScreen();
                     }
+
                     if (checkBox_rx.isChecked()) {
                         final EditText editText_duration = (EditText) findViewById(R.id.editText_duration);
                         final int duration = Integer.parseInt(editText_duration.getText().toString());
-                        //FIXME: check if the target is empty via iterator
-                        // check 1st target
-                        final CheckBox checkBox_rtt1 = (CheckBox) findViewById(R.id.checkBox_rtt1);
-                        final EditText editText_rx1 = (EditText) findViewById(R.id.editText_rx1);
-                        if (!editText_rx1.getText().toString().isEmpty()) {
-                            final int port1 = Integer.parseInt(editText_rx1.getText().toString());
-                            RustStreamReplay.startReceiver(port1, duration, checkBox_rtt1.isChecked(), false);
-                        }
-                        // check 2nd target
-                        final CheckBox checkBox_rtt2 = (CheckBox) findViewById(R.id.checkBox_rtt2);
-                        final EditText editText_rx2 = (EditText) findViewById(R.id.editText_rx2);
-                        if (!editText_rx2.getText().toString().isEmpty()) {
-                            final int port2 = Integer.parseInt(editText_rx2.getText().toString());
-                            RustStreamReplay.startReceiver(port2, duration, checkBox_rtt2.isChecked(), false);
-                        }
-                        // check 3rd target
-                        final CheckBox checkBox_rtt3 = (CheckBox) findViewById(R.id.checkBox_rtt3);
-                        final EditText editText_rx3 = (EditText) findViewById(R.id.editText_rx3);
-                        if (!editText_rx3.getText().toString().isEmpty()) {
-                            final int port3 = Integer.parseInt(editText_rx3.getText().toString());
-                            RustStreamReplay.startReceiver(port3, duration, checkBox_rtt3.isChecked(), false);
-                        }
-                        // check 4th target
-                        final CheckBox checkBox_rtt4 = (CheckBox) findViewById(R.id.checkBox_rtt4);
-                        final EditText editText_rx4 = (EditText) findViewById(R.id.editText_rx4);
-                        if (!editText_rx4.getText().toString().isEmpty()) {
-                            final int port4 = Integer.parseInt(editText_rx4.getText().toString());
-                            RustStreamReplay.startReceiver(port4, duration, checkBox_rtt4.isChecked(), false);
+
+                        final int[][] rx_items = {
+                            {R.id.checkBox_rtt1, R.id.checkBox_rx1, R.id.editText_rx1},
+                            {R.id.checkBox_rtt2, R.id.checkBox_rx2, R.id.editText_rx2},
+                            {R.id.checkBox_rtt3, R.id.checkBox_rx3, R.id.editText_rx3},
+                            {R.id.checkBox_rtt4, R.id.checkBox_rx4, R.id.editText_rx4},
+                        };
+
+                        for (int[] rx_port : rx_items) {
+                            final EditText editText_rx = (EditText) findViewById(rx_port[2]);
+                            if (!editText_rx.getText().toString().isEmpty()) {
+                                final int port = Integer.parseInt(editText_rx.getText().toString());
+                                final boolean calc_rtt = ((CheckBox) findViewById(rx_port[0])).isChecked();
+                                final boolean rx_mode  = ((CheckBox) findViewById(rx_port[1])).isChecked();
+                                RustStreamReplay.startReceiver(port, duration, calc_rtt, rx_mode);
+                            }
                         }
                     }
 
@@ -166,7 +158,7 @@ public class MainActivity extends Activity {
         setSpinnerFromResId(R.array.options_resolution_keys,R.id.spinner_video_resolution, PREFERENCE_SPINNER_RESOLUTION);
         setSpinnerFromResId(R.array.options_bitrate_keys, R.id.spinner_video_bitrate, PREFERENCE_SPINNER_BITRATE);
 
-        // setup manifest_spinner entries from "*.json" assets files 
+        // setup manifest_spinner entries from "*manifest/.json" assets files
         final AssetManager assets = this.getAssets();
         List<CharSequence> manifestFiles = new ArrayList<>();
         try {
@@ -182,6 +174,11 @@ public class MainActivity extends Activity {
         } catch (Exception e) {
             Log.e(TAG, "Failed to list assets due to:" + e.toString());
         }
+
+        // initialize ExoPlayer
+        final ExoPlayer player = new ExoPlayer.Builder(context).build();
+        final PlayerView playerView = (PlayerView) findViewById(R.id.player_view);
+        playerView.setPlayer(player);
 
         // startService();
     }
@@ -337,8 +334,6 @@ public class MainActivity extends Activity {
         if (serviceMessenger == null) {
             return;
         }
-//        final Intent stopCastIntent = new Intent(ScreenCastService.ACTION_STOP_CAST);
-//        sendBroadcast(stopCastIntent);
 
         Message msg = Message.obtain(null, ActivityServiceMessage.STOP);
         msg.replyTo = messenger;

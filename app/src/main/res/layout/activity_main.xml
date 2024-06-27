@@ -209,83 +209,144 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <CheckBox
-                            android:id="@+id/checkBox_rtt1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="calc_rtt" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
 
-                        <EditText
-                            android:id="@+id/editText_rx1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:gravity="center"
-                            android:hint="RX Port 1"
-                            android:inputType="numberDecimal" />
+                            <CheckBox
+                                android:id="@+id/checkBox_rtt1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="calc_rtt" />
+
+                            <CheckBox
+                                android:id="@+id/checkBox_rx1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="rx_mode" />
+
+                            <EditText
+                                android:id="@+id/editText_rx1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ems="10"
+                                android:gravity="center"
+                                android:hint="RX Port 1"
+                                android:inputType="numberDecimal" />
+                        </LinearLayout>
+
                     </TableRow>
 
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <CheckBox
-                            android:id="@+id/checkBox_rtt2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="calc_rtt" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
 
-                        <EditText
-                            android:id="@+id/editText_rx2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:gravity="center|center_vertical"
-                            android:hint="RX Port 2"
-                            android:inputType="numberDecimal" />
+                            <CheckBox
+                                android:id="@+id/checkBox_rtt2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="calc_rtt" />
+
+                            <CheckBox
+                                android:id="@+id/checkBox_rx2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="rx_mode" />
+
+                            <EditText
+                                android:id="@+id/editText_rx2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ems="10"
+                                android:gravity="center|center_vertical"
+                                android:hint="RX Port 2"
+                                android:inputType="numberDecimal" />
+                        </LinearLayout>
+
                     </TableRow>
 
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <CheckBox
-                            android:id="@+id/checkBox_rtt3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="calc_rtt" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
 
-                        <EditText
-                            android:id="@+id/editText_rx3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:gravity="center|center_vertical"
-                            android:hint="RX Port 3"
-                            android:inputType="numberDecimal" />
+                            <CheckBox
+                                android:id="@+id/checkBox_rtt3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="calc_rtt" />
+
+                            <CheckBox
+                                android:id="@+id/checkBox_rx3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="rx_mode" />
+
+                            <EditText
+                                android:id="@+id/editText_rx3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ems="10"
+                                android:gravity="center|center_vertical"
+                                android:hint="RX Port 3"
+                                android:inputType="numberDecimal" />
+                        </LinearLayout>
+
                     </TableRow>
 
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <CheckBox
-                            android:id="@+id/checkBox_rtt4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="calc_rtt" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
 
-                        <EditText
-                            android:id="@+id/editText_rx4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:gravity="center|center_vertical"
-                            android:hint="RX Port 4"
-                            android:inputType="numberDecimal" />
+                            <CheckBox
+                                android:id="@+id/checkBox_rtt4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="calc_rtt" />
+
+                            <CheckBox
+                                android:id="@+id/checkBox_rx4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="rx_mode" />
+
+                            <EditText
+                                android:id="@+id/editText_rx4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ems="10"
+                                android:gravity="center|center_vertical"
+                                android:hint="RX Port 4"
+                                android:inputType="numberDecimal" />
+                        </LinearLayout>
+
                     </TableRow>
                 </TableLayout>
 
+                <androidx.media3.ui.PlayerView android:id="@+id/player_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="600dp"
+                    app:show_shuffle_button="false"
+                    app:show_subtitle_button="false"/>
 
             </LinearLayout>
         </ScrollView>
