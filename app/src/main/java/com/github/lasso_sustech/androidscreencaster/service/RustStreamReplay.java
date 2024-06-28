@@ -21,6 +21,7 @@ public class RustStreamReplay {
         final boolean rx_mode
     );
     private static native void send(final String name, final byte[] data);
+    private static native byte[] recv(final int port);
 
     public static void startReplay(
             final AssetManager assets,
@@ -36,5 +37,9 @@ public class RustStreamReplay {
 
     public static void sendData(String name, byte[] data) {
         send(name, data);
+    }
+
+    public static byte[] recvData(int port) {
+        return recv(port);
     }
 }

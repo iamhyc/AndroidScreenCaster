@@ -32,6 +32,7 @@ import androidx.media3.exoplayer.source.ProgressiveMediaSource;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.source.MediaSource;
 import androidx.media3.datasource.DataSource;
+import androidx.media3.datasource.DataSpec;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -114,24 +115,6 @@ public class MainActivity extends Activity {
             }
         };
 
-        // initialize ExoPlayer
-        final ExoPlayer player = new ExoPlayer.Builder(context, MediaSource.Factory.UNSUPPORTED).build();
-        final StreamDataSource dataSource = new StreamDataSource();
-        DataSource.Factory dataSourceFactory = new DataSource.Factory() {
-            @Override
-            public DataSource createDataSource() {
-                return dataSource;
-            }
-        };
-        // Reference: https://developer.android.com/media/media3/exoplayer/progressive
-        // Reference: https://developer.android.com/media/media3/exoplayer/shrinking#java
-        MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory)
-                                        .createMediaSource(MediaItem.fromUri(Uri.EMPTY));
-        player.setMediaSource(mediaSource);
-        player.prepare();
-        // set player to PlayerView
-        final PlayerView playerView = (PlayerView) findViewById(R.id.player_view);
-        playerView.setPlayer(player);
 
         final ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -168,7 +151,38 @@ public class MainActivity extends Activity {
                             }
                         }
 
-                        player.play();
+                        final EditText editText_stream = (EditText) findViewById(R.id.editText_rx1);
+                        if (!editText_stream.getText().toString().isEmpty()) {
+                            final int stream_port = Integer.parseInt(editText_stream.getText().toString());
+                            final String authority = "stream://test:" + stream_port;
+                            // initialize ExoPlayer
+                            final ExoPlayer player = new ExoPlayer.Builder(context, MediaSource.Factory.UNSUPPORTED).build();
+                            final StreamDataSource dataSource = new StreamDataSource();
+                            try {
+                                dataSource.open(new DataSpec(
+                                    new Uri.Builder().authority(authority).build()
+                                ));
+                            } catch (Exception e) {
+                                Log.e(TAG, "Failed to open data source due to:" + e.toString());
+                            }
+                            DataSource.Factory dataSourceFactory = new DataSource.Factory() {
+                                @Override
+                                public DataSource createDataSource() {
+                                    return dataSource;
+                                }
+                            };
+                            // Reference: https://developer.android.com/media/media3/exoplayer/progressive
+                            // Reference: https://developer.android.com/media/media3/exoplayer/shrinking#java
+                            MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory)
+                                                            .createMediaSource(MediaItem.fromUri(Uri.EMPTY));
+                            player.setMediaSource(mediaSource);
+                            player.prepare();
+
+                            // set player to PlayerView
+                            final PlayerView playerView = (PlayerView) findViewById(R.id.player_view);
+                            playerView.setPlayer(player);
+                            player.play();
+                        }
                     }
 
                     if (!checkBox_tx.isChecked() && !checkBox_rx.isChecked()) {
@@ -178,7 +192,6 @@ public class MainActivity extends Activity {
 
                 } else {
                     stopScreenCapture();
-                    player.stop();
                 }
             }
         });

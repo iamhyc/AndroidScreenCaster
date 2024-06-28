@@ -1,20 +1,27 @@
 package com.github.lasso_sustech.androidscreencaster.service;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.hardware.display.VirtualDisplay;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.util.Log;
 import android.view.Surface;
+
+import androidx.core.app.NotificationCompat;
 
 import com.github.lasso_sustech.androidscreencaster.consts.ActivityServiceMessage;
 import com.github.lasso_sustech.androidscreencaster.consts.ExtraIntent;
@@ -30,6 +37,8 @@ public final class ScreenCastService extends Service {
 
     private static final int FPS = 30;
     private final String TAG = "ScreenCastService";
+    private static int FOREGROUND_ID = 1112;
+    private String CHANNEL_ID = "ScreenCastServiceChannel";
 
     private MediaProjectionManager mediaProjectionManager;
     private Handler handler;
@@ -72,6 +81,22 @@ public final class ScreenCastService extends Service {
         Log.d(TAG, "onCreate");
 
         System.loadLibrary("replay");
+
+        // create notification channel
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Screen Cast", NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
+        // start foreground notification
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(android.R.drawable.ic_menu_camera)
+                .setContentTitle("Screen Cast")
+                .setContentText("Screen Cast is running")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT).build();
+        if (Build.VERSION.SDK_INT > 28) {
+            startForeground(FOREGROUND_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION);
+        } else {
+            startForeground(FOREGROUND_ID, notification);
+        }
 
         mediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
     }
