@@ -1,7 +1,6 @@
-package com.github.magicsih.androidscreencaster.service;
+package com.github.lasso_sustech.androidscreencaster.service;
 
 import android.content.res.AssetManager;
-import android.util.Log;
 
 // Reference: https://stackoverflow.com/questions/32470463/what-is-the-naming-convention-for-java-native-interface-method-and-module-name
 public class RustStreamReplay {

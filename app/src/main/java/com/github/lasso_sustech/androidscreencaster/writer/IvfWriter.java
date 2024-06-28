@@ -1,4 +1,4 @@
-package com.github.magicsih.androidscreencaster.writer;
+package com.github.lasso_sustech.androidscreencaster.writer;
 
 /*
  * Copyright (C) 2013 The Android Open Source Project

@@ -1,4 +1,4 @@
-package com.github.magicsih.androidscreencaster.consts;
+package com.github.lasso_sustech.androidscreencaster.consts;
 
 /**
  * Created by sih on 2017-05-31.

@@ -1,4 +1,4 @@
-package com.github.magicsih.androidscreencaster;
+package com.github.lasso_sustech.androidscreencaster;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -36,11 +36,11 @@ import androidx.media3.datasource.DataSource;
 import java.util.List;
 import java.util.ArrayList;
 
-import com.github.magicsih.androidscreencaster.consts.ActivityServiceMessage;
-import com.github.magicsih.androidscreencaster.consts.ExtraIntent;
-import com.github.magicsih.androidscreencaster.service.ScreenCastService;
-import com.github.magicsih.androidscreencaster.service.RustStreamReplay;
-import com.github.magicsih.androidscreencaster.service.StreamDataSource;
+import com.github.lasso_sustech.androidscreencaster.consts.ActivityServiceMessage;
+import com.github.lasso_sustech.androidscreencaster.consts.ExtraIntent;
+import com.github.lasso_sustech.androidscreencaster.service.ScreenCastService;
+import com.github.lasso_sustech.androidscreencaster.service.RustStreamReplay;
+import com.github.lasso_sustech.androidscreencaster.service.StreamDataSource;
 
 public class MainActivity extends Activity {
 

@@ -1,4 +1,4 @@
-package com.github.magicsih.androidscreencaster.service;
+package com.github.lasso_sustech.androidscreencaster.service;
 
 
 import static androidx.media3.common.C.LENGTH_UNSET;

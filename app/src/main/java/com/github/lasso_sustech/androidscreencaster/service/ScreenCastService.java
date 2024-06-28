@@ -1,4 +1,4 @@
-package com.github.magicsih.androidscreencaster.service;
+package com.github.lasso_sustech.androidscreencaster.service;
 
 import android.app.Service;
 import android.content.Context;
@@ -16,14 +16,11 @@ import android.os.Messenger;
 import android.util.Log;
 import android.view.Surface;
 
-import com.github.magicsih.androidscreencaster.consts.ActivityServiceMessage;
-import com.github.magicsih.androidscreencaster.consts.ExtraIntent;
-import com.github.magicsih.androidscreencaster.service.RustStreamReplay;
-import com.github.magicsih.androidscreencaster.writer.IvfWriter;
+import com.github.lasso_sustech.androidscreencaster.consts.ActivityServiceMessage;
+import com.github.lasso_sustech.androidscreencaster.consts.ExtraIntent;
+import com.github.lasso_sustech.androidscreencaster.writer.IvfWriter;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
 /**

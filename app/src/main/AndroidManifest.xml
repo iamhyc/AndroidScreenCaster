@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.github.magicsih.androidscreencaster">
+    package="com.github.lasso_sustech.androidscreencaster">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.github.lasso_sustech.androidscreencaster.MainActivity"
             android:configChanges="orientation|screenLayout|uiMode|screenSize|smallestScreenSize|keyboard|keyboardHidden"
             android:launchMode="singleTask">
             <intent-filter>
@@ -24,7 +24,7 @@
         </activity>
 
         <service
-            android:name=".service.ScreenCastService"
+            android:name="com.github.lasso_sustech.androidscreencaster.service.ScreenCastService"
             android:process=":remote"
             android:enabled="true"
             android:exported="true"/>
