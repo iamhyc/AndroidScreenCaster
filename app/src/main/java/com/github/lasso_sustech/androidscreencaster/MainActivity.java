@@ -154,14 +154,12 @@ public class MainActivity extends Activity {
                         final EditText editText_stream = (EditText) findViewById(R.id.editText_rx1);
                         if (!editText_stream.getText().toString().isEmpty()) {
                             final int stream_port = Integer.parseInt(editText_stream.getText().toString());
-                            final String authority = "stream://test:" + stream_port;
+                            final Uri dataUri = new Uri.Builder().scheme("stream").encodedAuthority("test:" + stream_port).build();
                             // initialize ExoPlayer
-                            final ExoPlayer player = new ExoPlayer.Builder(context, MediaSource.Factory.UNSUPPORTED).build();
+                            final ExoPlayer player = new ExoPlayer.Builder(context).build();
                             final StreamDataSource dataSource = new StreamDataSource();
                             try {
-                                dataSource.open(new DataSpec(
-                                    new Uri.Builder().authority(authority).build()
-                                ));
+                                dataSource.open(new DataSpec(dataUri));
                             } catch (Exception e) {
                                 Log.e(TAG, "Failed to open data source due to:" + e.toString());
                             }
@@ -174,7 +172,7 @@ public class MainActivity extends Activity {
                             // Reference: https://developer.android.com/media/media3/exoplayer/progressive
                             // Reference: https://developer.android.com/media/media3/exoplayer/shrinking#java
                             MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory)
-                                                            .createMediaSource(MediaItem.fromUri(Uri.EMPTY));
+                                                            .createMediaSource(MediaItem.fromUri(dataUri));
                             player.setMediaSource(mediaSource);
                             player.prepare();
 

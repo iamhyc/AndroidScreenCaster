@@ -135,7 +135,7 @@ public final class ScreenCastService extends Service {
 
         Log.i(TAG, "Start casting with format:" + format + ", screen:" + screenWidth +"x"+screenHeight +" @ " + screenDpi + " bitrate:" + bitrate);
 
-        RustStreamReplay.startReplay(getAssets(), manifestFile, ipaddr1_tx, ipaddr1_rx, ipaddr2_rx, ipaddr2_rx, duration, ipcPort);
+        RustStreamReplay.startReplay(getAssets(), manifestFile, ipaddr1_tx, ipaddr1_rx, ipaddr2_tx, ipaddr2_rx, duration, ipcPort);
 
         startScreenCapture(resultCode, resultData, format, screenWidth, screenHeight, screenDpi, bitrate);
 

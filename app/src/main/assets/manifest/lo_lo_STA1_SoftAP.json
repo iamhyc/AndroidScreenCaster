@@ -1,20 +1,7 @@
 {
   "window_size": 500,
-  "tx_ipaddrs": ["127.0.0.1", "10.16.60.57"],
+  "tx_ipaddrs": ["127.0.0.1", "127.0.0.1"],
   "streams": [
-    {
-      "type": "UDP",
-      "npy_file": "data/proj_50Mbps.npy",
-      "tos": 96,
-      "port": 6203,
-      "throttle": 0,
-      "start_offset": 0,
-      "priority": "",
-      "links": [["127.0.0.1", "127.0.0.1"], ["127.0.0.1", "127.0.0.1"]],
-      "tx_parts": [0.5, 0.5],
-      "calc_rtt": true,
-      "no_logging": true
-    },
     {
       "type": "UDP",
       "npy_file": "stream://test",
