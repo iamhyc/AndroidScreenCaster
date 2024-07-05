@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.AssetManager;
+import android.media.MediaCodex;
+import android.media.MediaFormat;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +19,8 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -24,15 +28,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
-
-import androidx.media3.common.MediaItem;
-import androidx.media3.common.util.UnstableApi;
-import androidx.media3.ui.PlayerView;
-import androidx.media3.exoplayer.source.ProgressiveMediaSource;
-import androidx.media3.exoplayer.ExoPlayer;
-import androidx.media3.exoplayer.source.MediaSource;
-import androidx.media3.datasource.DataSource;
-import androidx.media3.datasource.DataSpec;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -67,6 +62,11 @@ public class MainActivity extends Activity {
     private MediaProjectionManager mediaProjectionManager;
     private ServiceConnection serviceConnection;
     private Messenger serviceMessenger;
+
+    private SurfaceView surfaceView;
+    private MediaCodec mediaDecoder;
+    private Surface surface;
+    private volatile boolean decodingRunning = false;
 
     @UnstableApi
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +115,39 @@ public class MainActivity extends Activity {
             }
         };
 
+        // setup surfaceView for video decoding
+        surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
+        surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+                surface = holder.getSurface();
+                try {
+                    final String[] videoResolutions = getResources().getStringArray(R.array.options_resolution_values)[videoResolutionSpinner.getSelectedItemPosition()].split(",");
+                    screenWidth = Integer.parseInt(videoResolutions[0]);
+                    screenHeight = Integer.parseInt(videoResolutions[1]);
+                    //
+                    mediaDecoder = MediaCodec.createDecoderByType("video/avc");
+                    MediaFormat format = MediaFormat.createVideoFormat("video/avc", screenWidth, screenHeight);
+                    mediaDecoder.configure(format, surface, null, 0);
+                    mediaDecoder.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+                Log.d(TAG, "Surface changed: " + format + " " + width + " " + height);
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+                mediaDecoder.stop();
+                mediaDecoder.release();
+                mediaDecoder = null;
+                surface = null;
+            }
+        });
 
         final ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -154,34 +187,14 @@ public class MainActivity extends Activity {
                         final EditText editText_stream = (EditText) findViewById(R.id.editText_rx1);
                         if (!editText_stream.getText().toString().isEmpty()) {
                             final int stream_port = Integer.parseInt(editText_stream.getText().toString());
-                            final String authority = "stream://test:" + stream_port;
-                            // initialize ExoPlayer
-                            final ExoPlayer player = new ExoPlayer.Builder(context, MediaSource.Factory.UNSUPPORTED).build();
-                            final StreamDataSource dataSource = new StreamDataSource();
-                            try {
-                                dataSource.open(new DataSpec(
-                                    new Uri.Builder().authority(authority).build()
-                                ));
-                            } catch (Exception e) {
-                                Log.e(TAG, "Failed to open data source due to:" + e.toString());
-                            }
-                            DataSource.Factory dataSourceFactory = new DataSource.Factory() {
-                                @Override
-                                public DataSource createDataSource() {
-                                    return dataSource;
+                            new Thread(() -> {
+                                while (decodingRunning) {
+                                    byte[] data = RustStreamReplay.recvData(stream_port);
+                                    if (data != null && data.length > 0) {
+                                        decodeSample(data);
+                                    }
                                 }
-                            };
-                            // Reference: https://developer.android.com/media/media3/exoplayer/progressive
-                            // Reference: https://developer.android.com/media/media3/exoplayer/shrinking#java
-                            MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory)
-                                                            .createMediaSource(MediaItem.fromUri(Uri.EMPTY));
-                            player.setMediaSource(mediaSource);
-                            player.prepare();
-
-                            // set player to PlayerView
-                            final PlayerView playerView = (PlayerView) findViewById(R.id.player_view);
-                            playerView.setPlayer(player);
-                            player.play();
+                            }).start();
                         }
                     }
 
@@ -192,6 +205,7 @@ public class MainActivity extends Activity {
 
                 } else {
                     stopScreenCapture();
+                    decodingRunning = false;
                 }
             }
         });
@@ -378,5 +392,23 @@ public class MainActivity extends Activity {
             Log.e(TAG, "RemoteException:" + e.toString());
             e.printStackTrace();
         }
+    }
+
+    private void decodeSample(byte[] data) {
+        int inputBufferIndex = mediaDecoder.dequeueInputBuffer(10000);
+
+        if (inputBufferIndex >= 0) {
+            ByteBuffer inputBuffer = mediaDecoder.getInputBuffer(inputBufferIndex);
+            inputBuffer.clear();
+            inputBuffer.put(data);
+            mediaDecoder.queueInputBuffer(inputBufferIndex, 0, data.length, 0, 0);
+        }
+
+        MediaCodec.BufferInfo bufferInfo = new MediaCodec.BufferInfo();
+        int outputBufferIndex = mediaDecoder.dequeueOutputBuffer(bufferInfo, 10000);
+        while (outputBufferIndex >= 0) {
+            mediaDecoder.releaseOutputBuffer(outputBufferIndex, true);
+            outputBufferIndex = mediaDecoder.dequeueOutputBuffer(bufferInfo, 0);
+        }   
     }
 }

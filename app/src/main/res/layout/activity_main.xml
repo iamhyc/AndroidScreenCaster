@@ -342,11 +342,9 @@
                     </TableRow>
                 </TableLayout>
 
-                <androidx.media3.ui.PlayerView android:id="@+id/player_view"
+                <SurfaceView android:id="@+id/surfaceView"
                     android:layout_width="match_parent"
-                    android:layout_height="600dp"
-                    app:show_shuffle_button="false"
-                    app:show_subtitle_button="false"/>
+                    android:layout_height="600dp" />
 
             </LinearLayout>
         </ScrollView>
