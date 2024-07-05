@@ -6,10 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.AssetManager;
-import android.media.MediaCodex;
+import android.media.MediaCodec;
 import android.media.MediaFormat;
 import android.media.projection.MediaProjectionManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -19,6 +18,7 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.AdapterView;
@@ -29,14 +29,15 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
+import java.nio.ByteBuffer;
 
 import com.github.lasso_sustech.androidscreencaster.consts.ActivityServiceMessage;
 import com.github.lasso_sustech.androidscreencaster.consts.ExtraIntent;
 import com.github.lasso_sustech.androidscreencaster.service.ScreenCastService;
 import com.github.lasso_sustech.androidscreencaster.service.RustStreamReplay;
-import com.github.lasso_sustech.androidscreencaster.service.StreamDataSource;
 
 public class MainActivity extends Activity {
 
@@ -68,7 +69,6 @@ public class MainActivity extends Activity {
     private Surface surface;
     private volatile boolean decodingRunning = false;
 
-    @UnstableApi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -122,9 +122,10 @@ public class MainActivity extends Activity {
             public void surfaceCreated(SurfaceHolder holder) {
                 surface = holder.getSurface();
                 try {
+                    final Spinner videoResolutionSpinner = (Spinner) findViewById(R.id.spinner_video_resolution);
                     final String[] videoResolutions = getResources().getStringArray(R.array.options_resolution_values)[videoResolutionSpinner.getSelectedItemPosition()].split(",");
-                    screenWidth = Integer.parseInt(videoResolutions[0]);
-                    screenHeight = Integer.parseInt(videoResolutions[1]);
+                    final int screenWidth = Integer.parseInt(videoResolutions[0]);
+                    final int screenHeight = Integer.parseInt(videoResolutions[1]);
                     //
                     mediaDecoder = MediaCodec.createDecoderByType("video/avc");
                     MediaFormat format = MediaFormat.createVideoFormat("video/avc", screenWidth, screenHeight);
@@ -187,6 +188,7 @@ public class MainActivity extends Activity {
                         final EditText editText_stream = (EditText) findViewById(R.id.editText_rx1);
                         if (!editText_stream.getText().toString().isEmpty()) {
                             final int stream_port = Integer.parseInt(editText_stream.getText().toString());
+                            decodingRunning = true;
                             new Thread(() -> {
                                 while (decodingRunning) {
                                     byte[] data = RustStreamReplay.recvData(stream_port);
