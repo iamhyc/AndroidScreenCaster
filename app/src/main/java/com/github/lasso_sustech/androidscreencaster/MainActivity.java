@@ -73,6 +73,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         System.loadLibrary("replay");
+        System.loadLibrary("libmulnictl");
 
         setContentView(R.layout.activity_main);
 
@@ -150,6 +151,14 @@ public class MainActivity extends Activity {
             }
         });
 
+        final ToggleButton toggleButtonCtrl = (ToggleButton) findViewById(R.id.toggleButton_ctrl);
+        toggleButtonCtrl.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                RustStreamReplay.setControllerStatus(isChecked);
+            }
+        });
+
         final ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -159,6 +168,7 @@ public class MainActivity extends Activity {
 
                     final CheckBox checkBox_tx = (CheckBox) findViewById(R.id.checkBox_tx);
                     final CheckBox checkBox_rx = (CheckBox) findViewById(R.id.checkBox_rx);
+                    final CheckBox checkBox_ctrl = (CheckBox) findViewById(R.id.checkBox_ctrl);
 
                     if (checkBox_tx.isChecked()) {
                         startCaptureScreen();
@@ -200,7 +210,13 @@ public class MainActivity extends Activity {
                         }
                     }
 
-                    if (!checkBox_tx.isChecked() && !checkBox_rx.isChecked()) {
+                    if (checkBox_ctrl.isChecked()) {
+                        final EditText editText_ctrl_uri = (EditText) findViewById(R.id.editText_ctrl_uri);
+                        final String target_uri = editText_ctrl_uri.getText().toString();
+                        RustStreamReplay.startController(target_uri);
+                    }
+
+                    if (!checkBox_tx.isChecked() && !checkBox_rx.isChecked() && !checkBox_ctrl.isChecked()) {
                         toggleButton.setChecked(false);
                         Log.e(TAG, "Neither tx nor rx is checked.");
                     }

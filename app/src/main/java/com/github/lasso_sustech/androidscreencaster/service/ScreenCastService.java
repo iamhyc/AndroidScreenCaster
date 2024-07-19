@@ -20,6 +20,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.util.Log;
 import android.view.Surface;
+import java.util.Date;
 
 import androidx.core.app.NotificationCompat;
 
@@ -35,7 +36,7 @@ import java.nio.ByteBuffer;
  */
 public final class ScreenCastService extends Service {
 
-    private static final int FPS = 30;
+    private static final int FPS = 120;
     private final String TAG = "ScreenCastService";
     private static int FOREGROUND_ID = 1112;
     private String CHANNEL_ID = "ScreenCastServiceChannel";
@@ -266,13 +267,17 @@ public final class ScreenCastService extends Service {
     }
 
     private void sendData(byte[] header, byte[] data) {
+        // final long date = new Date().getTime();
+
         if(header != null) {
             byte[] headerAndBody = new byte[header.length + data.length];
             System.arraycopy(header, 0, headerAndBody, 0, header.length);
             System.arraycopy(data, 0, headerAndBody, header.length, data.length);
             RustStreamReplay.sendData("stream://test", headerAndBody);
+            // Log.i(TAG, String.format("%d %d", date, header.length+data.length));
         } else{
             RustStreamReplay.sendData("stream://test", data);
+            // Log.i(TAG, String.format("%d %d", date, data.length));
         }
     }
 

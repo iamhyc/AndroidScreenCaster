@@ -23,6 +23,9 @@ public class RustStreamReplay {
     private static native void send(final String name, final byte[] data);
     private static native byte[] recv(final int port);
 
+    private static native void start_controller(final String target_uri);
+    private static native void set_controller_status(final boolean status);
+
     public static void startReplay(
             final AssetManager assets,
             String manifest_file, String ipaddr1_tx, String ipaddr1_rx, String ipaddr2_tx, String ipaddr2_rx, double duration, int ipc_port
@@ -42,4 +45,13 @@ public class RustStreamReplay {
     public static byte[] recvData(int port) {
         return recv(port);
     }
+
+    public static void startController(String target_uri) {
+        start_controller(target_uri);
+    }
+
+    public static void setControllerStatus(boolean status) {
+        set_controller_status(status);
+    }
+
 }

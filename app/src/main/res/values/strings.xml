@@ -29,6 +29,7 @@
 
     <string-array name="options_resolution_keys">
         <item>Native</item>
+        <item>1200x2664 @ 320</item>
         <item>1920x1080 @ 320</item>
         <item>1280x720 @ 320</item>
         <item>800x480 @ 160</item>
@@ -37,6 +38,7 @@
 
     <string-array name="options_resolution_values">
         <item>0,0,0</item>
+        <item>1200,2664,320</item>
         <item>1920,1080,320</item>
         <item>1280,720,320</item>
         <item>800,480,160</item>
@@ -44,13 +46,13 @@
     </string-array>
 
     <string-array name="options_bitrate_keys">
-        <item>10 Mbps</item>
+        <item>20 Mbps</item>
         <item>4 Mbps</item>
         <item>2 Mbps</item>
     </string-array>
 
     <integer-array name="options_bitrate_values">
-        <item>10240000</item>
+        <item>20480000</item>
         <item>4096000</item>
         <item>2048000</item>
     </integer-array>

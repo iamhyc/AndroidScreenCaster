@@ -56,8 +56,8 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:inputType="number"
-                    android:text="30"
-                    tools:text="30" />
+                    android:text="60"
+                    tools:text="60" />
 
                 <View
                     android:id="@+id/divider_general"
@@ -346,6 +346,48 @@
                     android:layout_width="match_parent"
                     android:layout_height="600dp" />
 
+                <View
+                    android:id="@+id/divider_ctrl"
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="?android:attr/listDivider" />
+
+                <TextView
+                    android:id="@+id/textView_control"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Controller Section" />
+
+                <TextView
+                    android:id="@+id/textView_ctrl_uri"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Configuration File URI" />
+
+                <EditText
+                    android:id="@+id/editText_ctrl_uri"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="text|textUri"
+                    android:text="http://192.168.3.82:5000/exp_test.json" />
+
+                <TextView
+                    android:id="@+id/textView_ctrl_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Enable Controller" />
+
+                <ToggleButton
+                    android:id="@+id/toggleButton_ctrl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="ToggleButton"
+                    android:textOff="DISABLE"
+                    android:textOn="ENABLE" />
+
             </LinearLayout>
         </ScrollView>
 
@@ -376,6 +418,13 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Rx" />
+
+            <CheckBox
+                android:id="@+id/checkBox_ctrl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Ctrl" />
 
             <ToggleButton
                 android:id="@+id/toggleButton"
