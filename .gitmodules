@@ -1,7 +1,7 @@
 [submodule "stream-replay"]
 	path = stream-replay
 	url = https://github.com/lasso-sustech/stream-replay
-	branch = android
+	branch = master
 [submodule "mulNICtl"]
 	path = mulNICtl
 	url = https://github.com/lasso-sustech/mulNICtl.git

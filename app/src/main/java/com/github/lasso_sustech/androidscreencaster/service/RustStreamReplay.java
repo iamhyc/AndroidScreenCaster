@@ -18,7 +18,8 @@ public class RustStreamReplay {
         final int port,
         final int duration,
         final boolean calc_rtt,
-        final boolean rx_mode
+        final boolean rx_mode,
+        final String src_ipaddrs
     );
     private static native void send(final String name, final byte[] data);
     private static native byte[] recv(final int port);
@@ -34,8 +35,8 @@ public class RustStreamReplay {
         startTx(assets, manifest_file, ipaddr1_tx, ipaddr1_rx, ipaddr2_tx, ipaddr2_rx, duration, ipc_port);
     }
 
-    public static void startReceiver(int port, int duration, boolean calc_rtt, boolean rx_mode) {
-        startRx(port, duration, calc_rtt, rx_mode);
+    public static void startReceiver(int port, int duration, boolean calc_rtt, boolean rx_mode, String src_ipaddrs) {
+        startRx(port, duration, calc_rtt, rx_mode, src_ipaddrs);
     }
 
     public static void sendData(String name, byte[] data) {

@@ -191,7 +191,8 @@ public class MainActivity extends Activity {
                                 final int port = Integer.parseInt(editText_rx.getText().toString());
                                 final boolean calc_rtt = ((CheckBox) findViewById(rx_port[0])).isChecked();
                                 final boolean rx_mode  = ((CheckBox) findViewById(rx_port[1])).isChecked();
-                                RustStreamReplay.startReceiver(port, duration, calc_rtt, rx_mode);
+                                final String src_ipaddrs = ((EditText) findViewById(R.id.editText_src_ipaddrs)).getText().toString();
+                                RustStreamReplay.startReceiver(port, duration, calc_rtt, rx_mode, src_ipaddrs);
                             }
                         }
 
